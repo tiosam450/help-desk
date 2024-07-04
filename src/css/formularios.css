@@ -1,0 +1,55 @@
+.containerC{
+    display: flex;
+    flex-direction: column;
+}
+
+.formCadastro{
+    width: min(430px, 90%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: #1c1d1f;
+    padding: 45px;
+    border-radius: 12px;
+}
+
+.formCadastro h2{
+    margin-bottom: 40px;
+    color: white;
+}
+
+.logoHelpdesk{
+    width: max(90%, 150px);
+    margin: 0 0 50px 0;
+}
+
+.formCadastro input{
+    width: 100%;
+    font-size: 1rem;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.btnSubmit{
+    color: white;
+    width: 100%;
+    font-size: 1.2rem;
+    padding: 8px;
+    margin: 5px 0 10px;
+    border: none;
+    border-radius: 6px;
+    background: DodgerBlue;
+    transition:  .2s all;
+}
+
+.btnSubmit:hover{
+    background: rgb(60, 158, 255)
+}
+
+.formCadastro p, .formCadastro a{
+    font-size: .9rem;
+    color: white;
+}

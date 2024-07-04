@@ -1,0 +1,29 @@
+.contentTitulo{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: black;
+    gap: 20px;
+    padding: 10px;
+    border-radius: 6px;
+    background: white;
+}
+
+.contentTitulo svg{
+    font-size: 1.4rem;
+}
+
+@media screen and (max-width: 700px) {
+    .contentTitulo{
+        width: min(400px, 90%);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        color: black;
+        gap: 20px;
+        padding: 10px;
+        border-radius: 6px;
+        background: white;
+    }
+}
