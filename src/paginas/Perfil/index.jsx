@@ -60,7 +60,7 @@ export default function Perfil() {
           <input name='nome' type="text" value={nome} placeholder="Seu nome" onChange={((e) => { setNome(e.target.value) })} />
 
           <label className='labelPerfilin' htmlFor='email' >Email</label>
-          <input name='email' type="text" value={email} disabled={true} />
+          <input name='email' type="email" value={email} disabled={true} />
 
           <button className='btnSalvar' type="submit">Salvar</button>
         </form>
