@@ -116,6 +116,8 @@ function ContextApi({ children }) {
       logar,
       logout,
       cadastrar,
+      setUsuario,
+      salvaLocalStorage,
     }}>
       {children}
     </Context.Provider>
