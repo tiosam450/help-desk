@@ -10,6 +10,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { db, storage } from '../../services/firebaseConnection';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { TbUrgent } from 'react-icons/tb';
 
 export default function Perfil() {
 
@@ -18,6 +19,7 @@ export default function Perfil() {
   const [imagem, setImagem] = useState(null)
   const [nome, setNome] = useState(usuario && usuario.nome)
   const [email, setEmail] = useState(usuario && usuario.email)
+  const [loading, setLoading] = useState(false)
 
   function carregaImagem(e) {
     if (e.target.files[0]) {
@@ -26,7 +28,7 @@ export default function Perfil() {
       setImagem(imagemPerfil)
       setAvatarUrl(URL.createObjectURL(imagemPerfil))
     } else {
-      alert("Selecione uma imagem!")
+      alert("Selecione uma imagem!");
       setAvatarUrl(null);
     }
 
@@ -34,6 +36,7 @@ export default function Perfil() {
 //Atualiza Perfil
   async function atualizaPerfil (e){
     e.preventDefault();
+    setLoading(true)
     //Atualiza apenas o nome
     if(nome !== '' && imagem === null){
       const query = doc(db, 'usuarios', usuario.uid);
@@ -44,18 +47,18 @@ export default function Perfil() {
           ...usuario,
           nome: nome,
         }
-
-        setUsuario(dados)
-        salvaLocalStorage(dados)
-        toast.success("Atualizado com sucesso!")
+        setLoading(false);
+        setUsuario(dados);
+        salvaLocalStorage(dados);
+        toast.success("Atualizado com sucesso!");
 
       }).catch((erro)=>{
-        console.log(erro)
-        toast.error('Algo deu errado!')
+        console.log(erro);
+        toast.error('Algo deu errado!');
       })
 
     }else if(nome !== '' && imagem !== null){
-      upload()
+      upload();
     }
   }
 
@@ -63,6 +66,7 @@ export default function Perfil() {
 async function upload(){
   const uidUsuario = usuario.uid;
   const fotoRef = ref(storage, `imagem/${uidUsuario}/${imagem.name}`)
+  setLoading(true);
   const upLoadFoto = uploadBytes(fotoRef, imagem).then((foto)=>{
     getDownloadURL(foto.ref).then((async (downLoadUrl)=>{
       let urlFoto = downLoadUrl;
@@ -76,7 +80,7 @@ async function upload(){
           nome: nome,
           avatarUrl: urlFoto,
         }
-
+        setLoading(false)
         setUsuario(dados);
         salvaLocalStorage(dados);
         toast.success('Atualizado com sucesso!')
@@ -112,7 +116,6 @@ function removeFoto(){
           <FaUserEdit />
         </Titulo>
 
-
         <form className="containerFormPerfil" onSubmit={atualizaPerfil}>
           <label className="labelPerfil">
             <span className='labelIcone'>
@@ -137,7 +140,7 @@ function removeFoto(){
           <label className='labelPerfilin' htmlFor='email' >Email</label>
           <input name='email' type="email" value={email} disabled={true} />
 
-          <button className='btnSalvar' type="submit">Salvar</button>
+          <button className='btnSalvar' type="submit">{loading ? "Carregando..." : "Salvar"}</button>
         </form>
 
       </div>

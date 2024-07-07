@@ -107,6 +107,11 @@ function ContextApi({ children }) {
     localStorage.setItem('dadosUsuario', JSON.stringify(dados))
   }
 
+  //Cadastra clientes
+  async function cadastraClientes(){
+    alert('Clientes')
+  }
+
   return (
     <Context.Provider value={{
       logado: !!usuario,
@@ -118,6 +123,7 @@ function ContextApi({ children }) {
       cadastrar,
       setUsuario,
       salvaLocalStorage,
+      cadastraClientes,
     }}>
       {children}
     </Context.Provider>
