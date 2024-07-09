@@ -6,6 +6,7 @@ import Dashboard from '../paginas/Dashboard'
 import RotaPrivada from './RotaPrivada'
 import Perfil from '../paginas/Perfil'
 import Clientes from '../paginas/Clientes'
+import NovoChamado from '../paginas/NovoChamado'
 
 const Rotas = () => {
   return (
@@ -15,6 +16,7 @@ const Rotas = () => {
         <Route path='/dashboard' element={<RotaPrivada><Dashboard/></RotaPrivada>} />
         <Route path='/perfil' element={<RotaPrivada><Perfil/></RotaPrivada>} />
         <Route path='/clientes' element={<RotaPrivada><Clientes/></RotaPrivada>} />
+        <Route path='/novochamado' element={<RotaPrivada><NovoChamado/></RotaPrivada>}/>
     </Routes>
   )
 }
