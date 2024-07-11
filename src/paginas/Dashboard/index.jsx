@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Context } from "../../contexApi/contextApi";
 import Header from "../../componentes/Header";
 import './dashboard.css';
@@ -10,6 +10,9 @@ import { IoEyeSharp } from "react-icons/io5";
 import { TbEyeSearch } from "react-icons/tb";
 
 export default function Dashboard() {
+    useEffect(()=>{
+        
+    },[])
 
     return (
         <div className="bg">
@@ -48,27 +51,9 @@ export default function Dashboard() {
                                 </div>
                             </td>
                         </tr>
-                        
-                        <tr>
-                            <td data-label='Código'>01</td>
-                            <td data-label='Cliente'>Pixel Web</td>
-                            <td data-label='Assunto'>Novo chamado</td>
-                            <td data-label='Status'> <span className=" status cinza">Aberto</span></td>
-                            <td data-label='Data'>07/08/2024</td>
-                            <td data-label='Ações' className="acoes">
-                                <div>
-                                <button className="acao amarelo"><FaEdit /></button>
-                                <button className="acao azul"><TbEyeSearch /></button>
-                                </div>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
-
             </div>
-
-
-
         </div>
     )
 }

@@ -17,7 +17,7 @@ export default function Clientes() {
         e.preventDefault();
         setLoading(true)
         if (nomeEmpresa !== '' && cnpj !== '' && endereco !== '') {
-           addDoc(collection(db, 'Clientes'), {
+           addDoc(collection(db, 'clientes'), {
             nome: nomeEmpresa,
             cpf_cnpj: cnpj,
             endereco: endereco,

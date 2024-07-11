@@ -3,7 +3,7 @@ import Header from "../../componentes/Header";
 import { BiPlusCircle } from "react-icons/bi";
 import { useContext, useEffect, useState } from "react";
 import "./novoChamado.css"
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { Context } from "../../contexApi/contextApi";
 import { db } from "../../services/firebaseConnection";
 import { toast } from "react-toastify";
@@ -17,14 +17,14 @@ export default function NovoChamado() {
     const [assunto, setAssunto] = useState('Suporte')
     const [status, setStatus] = useState('Abertpo')
     const [descricao, setDescricao] = useState('');
-    const listaDeclientesDb = collection(db, 'Clientes');
+    const listaDeclientesDb = collection(db, 'clientes');
 
     useEffect(() => {
         async function listaClientes() {
-            await getDocs(listaDeclientesDb).then((lista)=>{
+            await getDocs(listaDeclientesDb).then((lista) => {
                 let listaClientes = []
 
-                lista.forEach((doc)=>{
+                lista.forEach((doc) => {
                     listaClientes.push({
                         id: doc.id,
                         nome: doc.data().nome,
@@ -35,7 +35,7 @@ export default function NovoChamado() {
                 setLoadingClientes(true)
 
 
-            }).catch((erro)=>{
+            }).catch((erro) => {
                 console.log(erro);
                 toast.error('Algo deu errado!')
             })
@@ -45,8 +45,25 @@ export default function NovoChamado() {
     }, [])
 
 
-    function novoChamado() {
-        alert('Teste')
+    async function novoChamado(e) {
+        e.preventDefault()
+        await addDoc(collection(db, 'chamados'), {
+            data: new Date(),
+            idCliente: clientes[clienteSelecionado].id,
+            cliente: clientes[clienteSelecionado].nome,
+            assunto: assunto,
+            descricao: descricao,
+            status: status,
+            idUsuario: usuario.uid,
+        }).then(()=>{
+            toast.success('Novo chamado inserido!');
+            setDescricao('');
+            setClienteSelecionado(0);
+        }).catch(()=>{
+            toast.error('Algo deu errado!');
+            console.log(erro);
+        })
+
     }
 
     function statusNovo(e) {
@@ -57,7 +74,7 @@ export default function NovoChamado() {
         setAssunto(e.target.value)
     }
 
-    function selecionaCliente(e){
+    function selecionaCliente(e) {
         setClienteSelecionado(e.target.value)
     }
 
@@ -75,18 +92,17 @@ export default function NovoChamado() {
                 <form className="containerFormNovo" onSubmit={novoChamado}>
                     <label className="labelNovoChamado" htmlFor="clientes">Clientes</label>
                     {loadingClientes ? <select className="selectNovoChamado" name="clientes" value={clienteSelecionado} onChange={selecionaCliente}>
-                        {clientes.map((item, index)=>(
+                        {clientes.map((item, index) => (
                             <option key={index} value={index}>{item.nome}</option>
                         ))}
-                        
-                    </select> : <input type="text" disabled={true} value='Carregando...'/>}
+
+                    </select> : <input type="text" disabled={true} value='Carregando...' />}
 
                     <label className="labelNovoChamado" htmlFor="assunto" >Assunto</label>
                     <select className="selectNovoChamado" name="assunto" value={assunto} onChange={assuntoChamado}>
                         <option value="Suporte">Suporte</option>
                         <option value="Visita Técnica">Visita Técnica</option>
                         <option value="Outros assuntos">Outros assuntos</option>
-
                     </select>
 
                     <label className="labelNovoChamado" htmlFor="" name="status">Status</label>
