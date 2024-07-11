@@ -1,13 +1,64 @@
 import Titulo from "../../componentes/Titulo";
 import Header from "../../componentes/Header";
 import { BiPlusCircle } from "react-icons/bi";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import "./novoChamado.css"
+import { collection, getDocs } from "firebase/firestore";
+import { Context } from "../../contexApi/contextApi";
+import { db } from "../../services/firebaseConnection";
+import { toast } from "react-toastify";
 
 export default function NovoChamado() {
-    const [loading, setLloading] = useState(false)
+    const { usuario } = useContext(Context)
+    const [loading, setLoading] = useState(false);
+    const [loadingClientes, setLoadingClientes] = useState(false);
+    const [clientes, setClientes] = useState([]);
+    const [clienteSelecionado, setClienteSelecionado] = useState(0)
+    const [assunto, setAssunto] = useState('Suporte')
+    const [status, setStatus] = useState('Abertpo')
+    const [descricao, setDescricao] = useState('');
+    const listaDeclientesDb = collection(db, 'Clientes');
+
+    useEffect(() => {
+        async function listaClientes() {
+            await getDocs(listaDeclientesDb).then((lista)=>{
+                let listaClientes = []
+
+                lista.forEach((doc)=>{
+                    listaClientes.push({
+                        id: doc.id,
+                        nome: doc.data().nome,
+                        endereco: doc.data().endereco,
+                    })
+                })
+                setClientes(listaClientes)
+                setLoadingClientes(true)
+
+
+            }).catch((erro)=>{
+                console.log(erro);
+                toast.error('Algo deu errado!')
+            })
+        }
+
+        listaClientes()
+    }, [])
+
 
     function novoChamado() {
         alert('Teste')
+    }
+
+    function statusNovo(e) {
+        setStatus(e.target.value);
+    }
+
+    function assuntoChamado(e) {
+        setAssunto(e.target.value)
+    }
+
+    function selecionaCliente(e){
+        setClienteSelecionado(e.target.value)
     }
 
     return (
@@ -21,34 +72,41 @@ export default function NovoChamado() {
                     <BiPlusCircle />
                 </Titulo>
 
-                <form className="containerFormPerfil" onSubmit={novoChamado}>
-                    <label htmlFor="clientes">Clientes</label>
-                    <select name="clientes">
-                        <option key={1} value={1}>Samuel</option>
-                        <option key={2} value={2}>Paty</option>
-                        <option key={3} value={3}>Gustavo</option>
-                    </select>
+                <form className="containerFormNovo" onSubmit={novoChamado}>
+                    <label className="labelNovoChamado" htmlFor="clientes">Clientes</label>
+                    {loadingClientes ? <select className="selectNovoChamado" name="clientes" value={clienteSelecionado} onChange={selecionaCliente}>
+                        {clientes.map((item, index)=>(
+                            <option key={index} value={index}>{item.nome}</option>
+                        ))}
+                        
+                    </select> : <input type="text" disabled={true} value='Carregando...'/>}
 
-                    <label htmlFor="assunto">Assunto</label>
-                    <select name="assunto">
+                    <label className="labelNovoChamado" htmlFor="assunto" >Assunto</label>
+                    <select className="selectNovoChamado" name="assunto" value={assunto} onChange={assuntoChamado}>
                         <option value="Suporte">Suporte</option>
                         <option value="Visita Técnica">Visita Técnica</option>
                         <option value="Outros assuntos">Outros assuntos</option>
 
                     </select>
 
-                    <label htmlFor="" name="status">Status</label>
-                    <div>
-                        <span>Aberto</span>
-                        <input type="radio" name="status" value="Aberto" />
-                        <span>Em andamento</span>
-                        <input type="radio" name="status" value="Em andamento" />
-                        <span>Concluído</span>
-                        <input type="radio" name="status" value="Concluído" />
+                    <label className="labelNovoChamado" htmlFor="" name="status">Status</label>
+                    <div className="statusNovoChamado">
+                        <div>
+                            <input type="radio" name="status" value="Aberto" checked={status == "Aberto"} onChange={statusNovo} />
+                            <span>Aberto</span>
+                        </div>
+                        <div>
+                            <input type="radio" name="status" value="Em andamento" onChange={statusNovo} checked={status == "Em andamento"} />
+                            <span>Em andamento</span>
+                        </div>
+                        <div>
+                            <input type="radio" name="status" value="Concluído" onChange={statusNovo} checked={status == "Concluído"} />
+                            <span>Concluído</span>
+                        </div>
                     </div>
 
-                    <label htmlFor="" name="descricao">Descrição</label>
-                    <textarea name="descricao"/>
+                    <label className="labelNovoChamado" htmlFor="" name="descricao">Descrição</label>
+                    <textarea name="descricao" value={descricao} placeholder="Escreva detalhadamente o motivo do chamado." onChange={e => setDescricao(e.target.value)} />
 
                     <button className='btnSalvar' type="submit">{loading ? "Carregando..." : "Salvar"}</button>
                 </form>
