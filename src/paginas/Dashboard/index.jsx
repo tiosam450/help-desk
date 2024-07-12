@@ -6,36 +6,37 @@ import Titulo from "../../componentes/Titulo";
 import { FaNoteSticky } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
-import { IoEyeSharp } from "react-icons/io5";
 import { TbEyeSearch } from "react-icons/tb";
-import { collection, getDoc, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { collection, getDoc, getDocs, limit, orderBy, query, startAfter } from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
-import { list } from "firebase/storage";
 import { format } from "date-fns";
 
 export default function Dashboard() {
     const [chamados, setchamados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [listaVazia, setListaVazia] = useState(false);
+    const [loadingMais, setloadingMais] = useState(false)
+    const [ultimoDoc, setUltimoDoc] = useState()
+    const colecaoChamados = collection(db, 'chamados');
+
 
     useEffect(() => {
-        async function carregaChamados(){
-            const colecaoChamados = collection(db, 'chamados');
-            const consulta = query(colecaoChamados, orderBy('data', 'desc'), limit(15));
+        async function carregaChamados() {
+            const consulta = query(colecaoChamados, orderBy('data', 'desc'), limit(1));
             const consultaChamados = await getDocs(consulta)
             setchamados([])
             atualizaEstado(consultaChamados);
             setLoading(false)
-        } 
+        }
         carregaChamados()
     }, [])
 
-    async function atualizaEstado(consultaChamados){
+    async function atualizaEstado(consultaChamados) {
         const listaVazia = consultaChamados.size == 0;
-        if(!listaVazia){
-            let lista =[];
+        if (!listaVazia) {
+            let lista = [];
 
-            consultaChamados.forEach((doc)=>{
+            consultaChamados.forEach((doc) => {
                 lista.push({
                     id: doc.uid,
                     cliente: doc.data().cliente,
@@ -47,13 +48,17 @@ export default function Dashboard() {
                 })
             })
 
-            setchamados([...chamados, ...lista])
-        }else{
+            const lastDoc = consultaChamados.docs[consultaChamados.docs.length - 1]
+            setchamados([...chamados, ...lista]);
+            setUltimoDoc(lastDoc);
+
+        } else {
             setListaVazia(false);
         }
+        setloadingMais(false);
     }
 
-    if(loading){
+    if (loading) {
         return (
             <div className="bg">
                 <div className="menuDash">
@@ -63,9 +68,9 @@ export default function Dashboard() {
                     <Titulo nome="Chamados">
                         <FaNoteSticky />
                     </Titulo>
-    
+
                     <Link to='/novoChamado'><button className="btnNovoChamado">+</button></Link>
-    
+
                     <div className="nenhumChamado">
                         <span>Buscando Chamados...</span>
                     </div>
@@ -73,7 +78,14 @@ export default function Dashboard() {
             </div>
         )
     }
-    
+
+    async function mais(){
+        setloadingMais(true);
+        const query2 = query(colecaoChamados, orderBy('data', 'desc'), startAfter(ultimoDoc), limit(1));
+        const consultaChamados = await getDocs(query2);
+        atualizaEstado(consultaChamados)
+    }
+
     return (
         <div className="bg">
             <div className="menuDash">
@@ -87,9 +99,9 @@ export default function Dashboard() {
                 <Link to='/novoChamado'><button className="btnNovoChamado">+</button></Link>
 
                 {chamados.length == 0 ?
-                <div className="nenhumChamado">
-                    <span>Nenhum chamado</span>
-                </div> :
+                    <div className="nenhumChamado">
+                        <span>Nenhum chamado</span>
+                    </div> :
                     <table>
                         <thead>
                             <tr>
@@ -102,23 +114,31 @@ export default function Dashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {chamados.map((item, index)=>(
+                            {chamados.map((item, index) => (
                                 <tr key={index}>
-                                <td data-label='Código'></td>
-                                <td data-label='Cliente'>{item.cliente}</td>
-                                <td data-label='Assunto'>{item.assunto}</td>
-                                <td data-label='Status'> <span className=" status cinza">{item.status}</span></td>
-                                <td data-label='Data'>{item.data}</td>
-                                <td data-label='Ações' className="acoes">
-                                    <div>
-                                        <button className="acao amarelo"><FaEdit /></button>
-                                        <button className="acao azul"><TbEyeSearch /></button>
-                                    </div>
-                                </td>
-                            </tr>
+                                    <td data-label='Código'></td>
+                                    <td data-label='Cliente'>{item.cliente}</td>
+                                    <td data-label='Assunto'>{item.assunto}</td>
+                                    <td data-label='Status'> <span className={item.status=="Aberto" ? "status verde" : " status cinza"
+                                    }>{item.status}</span></td>
+                                    <td data-label='Data'>{item.data}</td>
+                                    <td data-label='Ações' className="acoes">
+                                        <div>
+                                            <button className="acao amarelo"><FaEdit /></button>
+                                            <button className="acao azul"><TbEyeSearch /></button>
+                                        </div>
+                                    </td>
+                                </tr>
                             ))}
                         </tbody>
                     </table>}
+
+                {loadingMais && <div className="nenhumChamado">
+                    <span>Carregando...</span>
+                </div>}
+                <div className="nenhumChamado">
+                    <span className="btnMais" onClick={mais}>Mais resultados</span>
+                </div>
             </div>
         </div>
     )

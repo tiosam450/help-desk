@@ -23,7 +23,7 @@
   
   .container{
     width: 100%;
-    height: 100vh;
+    height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -31,7 +31,7 @@
 
   .bg{
     display: grid;
-    grid-template: "menu conteudo" 100vh / 300px 1fr;
+    grid-template: "menu conteudo" 100dvh / 300px 1fr;
   }
 
   .sideBar{
@@ -40,10 +40,11 @@
 
   .conteudo{
     width: 100%;
-    height: 100vh;
+    height: 100dvh;
     grid-area: conteudo;
     padding: 40px;
     background: #f0f0f0;
+    overflow-y: scroll;
   }
 
   @media (max-width: 700px)  {

@@ -81,6 +81,16 @@ table td{
     background: #bebebe;
 }
 
+.btnMais{
+    cursor: pointer;
+    padding: 10px;
+}
+
+.btnMais:hover{
+    color: #868686;
+}
+
+
 @media (max-width: 970px) {
     table thead{
         display: none;
