@@ -10,7 +10,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ContextApi>
-        <ToastContainer autoClose={2000} />
+        <ToastContainer autoClose={1000} />
         <Rotas />
       </ContextApi>
     </BrowserRouter>

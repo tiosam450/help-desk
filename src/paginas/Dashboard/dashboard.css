@@ -38,7 +38,7 @@ table tr{
 
 table th, table td{
     text-align: center;
-    padding: 10px 5px;   
+    padding: 20px 5px;   
 }
 
 table td{
@@ -51,7 +51,7 @@ table td{
     align-items: center;
 }
 
-.acao, .status{
+.acao, .status, .acao span{
     padding: 8px;
     margin: 0 5px;
     border: none;
@@ -59,6 +59,7 @@ table td{
     color: white;
     font-size: .9rem;
     transition: .2s ease-in-out all;
+    cursor: pointer
 }
 
 .acao:hover{
@@ -74,7 +75,15 @@ table td{
 }
 
 .verde{
-    background: #13d844;
+    background: #12b93c;
+    color: white;
+    padding: 3px 5px;
+    border-radius: 5px;
+}
+
+.vermelho{
+    background: #b91212;
+    color: white;
 }
 
 .cinza{

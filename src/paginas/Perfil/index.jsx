@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import { db, storage } from '../../services/firebaseConnection';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { TbUrgent } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 export default function Perfil() {
 
@@ -20,6 +21,7 @@ export default function Perfil() {
   const [nome, setNome] = useState(usuario && usuario.nome)
   const [email, setEmail] = useState(usuario && usuario.email)
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   function carregaImagem(e) {
     if (e.target.files[0]) {
@@ -33,16 +35,16 @@ export default function Perfil() {
     }
 
   }
-//Atualiza Perfil
-  async function atualizaPerfil (e){
+  //Atualiza Perfil
+  async function atualizaPerfil(e) {
     e.preventDefault();
     setLoading(true)
     //Atualiza apenas o nome
-    if(nome !== '' && imagem === null){
+    if (nome !== '' && imagem === null) {
       const query = doc(db, 'usuarios', usuario.uid);
       await updateDoc(query, {
         nome: nome,
-      }).then(()=>{
+      }).then(() => {
         let dados = {
           ...usuario,
           nome: nome,
@@ -52,58 +54,62 @@ export default function Perfil() {
         salvaLocalStorage(dados);
         toast.success("Atualizado com sucesso!");
 
-      }).catch((erro)=>{
+      }).catch((erro) => {
         console.log(erro);
         toast.error('Algo deu errado!');
       })
 
-    }else if(nome !== '' && imagem !== null){
+    } else if (nome !== '' && imagem !== null) {
       upload();
     }
   }
 
-//Faz upload da foto de perfil
-async function upload(){
-  const uidUsuario = usuario.uid;
-  const fotoRef = ref(storage, `imagem/${uidUsuario}/${imagem.name}`)
-  setLoading(true);
-  const upLoadFoto = uploadBytes(fotoRef, imagem).then((foto)=>{
-    getDownloadURL(foto.ref).then((async (downLoadUrl)=>{
-      let urlFoto = downLoadUrl;
-      const  query = doc(db, 'usuarios', usuario.uid);
-      await updateDoc(query, {
-        avatarUrl: urlFoto,
-        nome: nome,
-      }).then(()=>{
-        let dados = {
-          ...usuario,
-          nome: nome,
+  //Faz upload da foto de perfil
+  async function upload() {
+    const uidUsuario = usuario.uid;
+    const fotoRef = ref(storage, `imagem/${uidUsuario}/${imagem.name}`)
+    setLoading(true);
+    const upLoadFoto = uploadBytes(fotoRef, imagem).then((foto) => {
+      getDownloadURL(foto.ref).then((async (downLoadUrl) => {
+        let urlFoto = downLoadUrl;
+        const query = doc(db, 'usuarios', usuario.uid);
+        await updateDoc(query, {
           avatarUrl: urlFoto,
-        }
-        setLoading(false)
-        setUsuario(dados);
-        salvaLocalStorage(dados);
-        toast.success('Atualizado com sucesso!')
+          nome: nome,
+        }).then(() => {
+          let dados = {
+            ...usuario,
+            nome: nome,
+            avatarUrl: urlFoto,
+          }
+          setLoading(false)
+          setUsuario(dados);
+          salvaLocalStorage(dados);
+          toast.success('Atualizado com sucesso!')
 
-      })
-    }))
-  })
-}
-
-function removeFoto(){
-  let dados = {
-    ...usuario,
-    nome: nome,
-    avatarUrl: null,
+        })
+      }))
+    })
   }
 
-  setUsuario(dados);
-  setImagem(null)
-  setAvatarUrl(null)
+  function removeFoto() {
+    let dados = {
+      ...usuario,
+      nome: nome,
+      avatarUrl: null,
+    }
 
-  salvaLocalStorage(dados);
-  toast.success('Foto removida! Salve as alterações.')
-}
+    setUsuario(dados);
+    setImagem(null)
+    setAvatarUrl(null)
+
+    salvaLocalStorage(dados);
+    toast.success('Foto removida! Salve as alterações.')
+  }
+
+  function voltar() {
+    navigate('/dashboard')
+  }
 
   return (
     <div className="bg">
@@ -133,14 +139,17 @@ function removeFoto(){
           </label>
 
           <button onClick={removeFoto} className='btnRemoveFoto' type="button">Remover foto</button>
-          
+
           <label className='labelPerfilin' htmlFor='nome'>Nome</label>
           <input name='nome' type="text" value={nome} placeholder="Seu nome" onChange={((e) => { setNome(e.target.value) })} />
 
           <label className='labelPerfilin' htmlFor='email' >Email</label>
           <input name='email' type="email" value={email} disabled={true} />
 
-          <button className='btnSalvar' type="submit">{loading ? "Carregando..." : "Salvar"}</button>
+          <div className="botoes">
+            <button className='btnSalvar' onClick={voltar}>Voltar</button>
+            <button className='btnSalvar' type="submit">{loading ? "Carregando..." : "Salvar"}</button>
+          </div>
         </form>
 
       </div>

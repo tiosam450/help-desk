@@ -1,0 +1,53 @@
+.containerModal{
+    width: 100%;
+    height: 100dvh;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 5;
+}
+
+.modal{
+    position: relative;
+    width: min(800px, 90%);
+    background: white;
+    padding: 30px;
+    border-radius: 6px;
+}
+
+.modal hr{
+    margin: 20px 0 20px 0;
+    border: 1px solid rgba(128, 128, 128, 0.342);
+}
+
+.modal h3{
+    margin-bottom: 10px;
+}
+.modal span{
+    font-weight: 400;
+
+}
+
+.modal p{
+    font-weight: 400;
+}
+
+.modal svg{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 20px;
+    padding: 3px;
+    font-size: 1.8rem;
+    background: red;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    transition: .2s ease-in-out all;
+}
+
+.modal svg:hover{
+    transform: scale(1.1);
+}

@@ -6,12 +6,14 @@ import { Context } from "../../contexApi/contextApi";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function Clientes() {
     const [loading, setLoading] = useState(false)
     const [nomeEmpresa, setNomeEmpresa] = useState('');
     const [cnpj, setCnpj] = useState('');
     const [endereco, setEndereco] = useState('');
+    const navigate = useNavigate()
 
     async function cadastraClientes(e) {
         e.preventDefault();
@@ -36,6 +38,9 @@ export default function Clientes() {
             toast.warn('Preencha todos os campos!')
         }
     }
+    function voltar(){
+        navigate('/dashboard')
+    }
 
 
     return (
@@ -56,8 +61,10 @@ export default function Clientes() {
 
                     <label className='labelPerfilin' htmlFor='endereco' >Endereço</label>
                     <input name='endereco' type="text" value={endereco} placeholder="Digite o endereço" onChange={((e)=>{setEndereco(e.target.value)})} />
-
-                    <button className='btnSalvar' type="submit">{loading ? "Carregando..." : "Salvar"}</button>
+                    <div className="botoes">
+                        <button className='btnSalvar' onClick={voltar}>Voltar</button>
+                        <button className='btnSalvar' type="submit">{loading ? "Carregando..." : "Salvar"}</button>
+                    </div>
                 </form>
 
             </div>
