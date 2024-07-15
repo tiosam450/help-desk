@@ -1,15 +1,14 @@
-import { useContext, useEffect, useState } from "react";
-import { Context } from "../../contexApi/contextApi";
+import { useEffect, useState } from "react";
 import Header from "../../componentes/Header";
 import './dashboard.css';
 import Titulo from "../../componentes/Titulo";
 import { FaNoteSticky } from "react-icons/fa6";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { TbEyeSearch } from "react-icons/tb";
 import { collection, deleteDoc, getDocs, limit, orderBy, query, startAfter, doc } from "firebase/firestore";
-import { auth, db } from "../../services/firebaseConnection";
+import { db } from "../../services/firebaseConnection";
 import { format } from "date-fns";
 import Modal from "../../componentes/Modal";
 import { toast } from "react-toastify";
@@ -23,7 +22,6 @@ export default function Dashboard() {
     const colecaoChamados = collection(db, 'chamados');
     const [showModal, setShowModal] = useState(false);
     const [infoModal, setInfoModal] = useState({})
-    const navigate = useNavigate()
 
 // Carrega lista de chamados
     useEffect(() => {
