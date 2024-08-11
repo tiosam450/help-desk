@@ -8,7 +8,7 @@ import ContextApi from './contexApi/contextApi';
 export default function App() {
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/helpdesk'>
       <ContextApi>
         <ToastContainer autoClose={1000} />
         <Rotas />
